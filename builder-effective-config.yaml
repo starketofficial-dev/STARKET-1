@@ -1,0 +1,25 @@
+directories:
+  output: .
+  buildResources: build
+appId: com.starket.app
+productName: Starket
+files:
+  - filter:
+      - dist/**/*
+      - electron.cjs
+      - public/**/*
+compression: maximum
+asar: true
+win:
+  target:
+    target: nsis
+    arch:
+      - x64
+  artifactName: Starket-Setup.exe
+publish:
+  provider: github
+  owner: ammar-dev-dev
+  repo: starket
+extraMetadata:
+  main: electron.cjs
+electronVersion: 42.4.0

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.exe
+*.blockmap
+*.apk
+*.dmg
+release/
+android/
+ios/
+.DS_Store

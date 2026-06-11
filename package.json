@@ -1,0 +1,61 @@
+{
+  "name": "starket",
+  "private": true,
+  "version": "1.0.0",
+  "main": "electron.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron": "electron .",
+    "dist": "vite build && electron-builder",
+    "dist:mobile": "vite build && npx cap sync"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.1",
+    "electron-updater": "^6.8.9",
+    "lucide-react": "^0.383.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.12.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^10.0.3",
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.2",
+    "vite": "^5.2.0",
+    "wait-on": "^9.0.10"
+  },
+  "build": {
+    "appId": "com.starket.app",
+    "productName": "Starket",
+    "files": [
+      "dist/**/*",
+      "electron.cjs",
+      "public/**/*"
+    ],
+    "compression": "maximum",
+    "asar": true,
+    "directories": {
+      "output": "."
+    },
+    "win": {
+      "target": {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      },
+      "artifactName": "Starket-Setup.exe"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "ammar-dev-dev",
+      "repo": "starket"
+    },
+    "extraMetadata": {
+      "main": "electron.cjs"
+    }
+  }
+}
