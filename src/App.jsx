@@ -52,22 +52,6 @@ const DEMO_PARTNERS = [
   { id: 4, partner: 'Abdul Wahab', date: '2024-01-01', reason: 'Investor', role: 'Investor', capital: 90000, profit: 13000, drawings: 3500, wages: 7000, salesCommission: 2000 },
   { id: 5, partner: 'Abdul Bari', date: '2024-01-01', reason: 'Investor', role: 'Investor', capital: 80000, profit: 11000, drawings: 3000, wages: 6000, salesCommission: 1500 },
 ]
-// ── PAGE FOOTER ──
-function PageFooter() {
-  return (
-    <div className="page-footer">
-      <div className="page-footer-text">
-        <span>Designed &amp; Developed by</span>
-        <span className="page-footer-dot" />
-        <span className="page-footer-name">Ammar Ansari</span>
-      </div>
-      <div className="page-footer-text" style={{ fontSize: 10, opacity: 0.5 }}>
-        © {new Date().getFullYear()} STARKET · All rights reserved
-      </div>
-    </div>
-  )
-}
-
 // ── SIDEBAR ──
 function Sidebar({ active, setActive, open, setOpen }) {
   const navItems = [
@@ -75,7 +59,6 @@ function Sidebar({ active, setActive, open, setOpen }) {
     { id: 'shirts', label: 'Shirts', icon: Shirt },
     { id: 'customers', label: 'Customers', icon: Users },
     { id: 'partners', label: 'Partners', icon: Handshake },
-    { id: 'roles', label: 'Roles', icon: Users },
   ]
 
   return (
@@ -101,32 +84,8 @@ function Sidebar({ active, setActive, open, setOpen }) {
             )
           })}
         </nav>
-        <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-          <div style={{ fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.3px' }}>© 2026 STARKET</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-            <span style={{ fontSize: 10, color: 'var(--text-muted)', opacity: 0.7 }}>by</span>
-            <span style={{
-              fontSize: 11,
-              fontWeight: 800,
-              letterSpacing: '0.4px',
-              background: 'linear-gradient(135deg, #6c63ff, #ff6584)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>Ammar Ansari</span>
-          </div>
-          <button
-            onClick={() => { sessionStorage.clear(); window.location.reload() }}
-            style={{
-              marginTop: 4, background: 'rgba(255,101,132,0.1)',
-              border: '1px solid rgba(255,101,132,0.25)', borderRadius: 8,
-              color: '#ff6584', fontSize: 11, fontWeight: 700,
-              padding: '5px 14px', cursor: 'pointer', letterSpacing: '0.3px',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,101,132,0.2)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,101,132,0.1)'}
-          >Sign Out</button>
+        <div className="sidebar-footer">
+          © 2026 STARKET
         </div>
       </aside>
     </>
@@ -140,7 +99,6 @@ function Topbar({ page, setOpen }) {
     shirts: { title: 'Shirts', subtitle: 'Manage shirt production costs' },
     customers: { title: 'Customers', subtitle: 'Track orders & payments' },
     partners: { title: 'Partners', subtitle: 'Manage partner accounts' },
-    roles: { title: 'Roles', subtitle: 'Team members and their permissions' },
   }
   const { title, subtitle } = titles[page] || titles.dashboard
 
@@ -161,83 +119,16 @@ function Topbar({ page, setOpen }) {
 
 // ── MODAL ──
 function Modal({ title, onClose, children, onSave }) {
-  useEffect(() => {
-    // Step 1: scroll main-content to top so modal is always visible
-    const mainContent = document.querySelector('.main-content')
-    if (mainContent) {
-      mainContent.scrollTo({ top: 0, behavior: 'instant' })
-    }
-
-    // Step 2: lock all scrollable containers
-    const allScrollable = [
-      document.documentElement,
-      document.body,
-      mainContent,
-      document.querySelector('.page-content'),
-      document.querySelector('.app-shell'),
-    ].filter(Boolean)
-
-    const saved = allScrollable.map(el => ({
-      el,
-      overflow: el.style.overflow,
-      overflowY: el.style.overflowY,
-    }))
-
-    allScrollable.forEach(el => {
-      el.style.overflow = 'hidden'
-      el.style.overflowY = 'hidden'
-    })
-
-    // Step 3: block all scroll input methods
-    const preventDefault = e => e.preventDefault()
-    const preventKeys = e => {
-      const keys = [32, 33, 34, 35, 36, 37, 38, 39, 40]
-      if (keys.includes(e.keyCode)) e.preventDefault()
-    }
-    window.addEventListener('wheel', preventDefault, { passive: false })
-    window.addEventListener('touchmove', preventDefault, { passive: false })
-    window.addEventListener('keydown', preventKeys)
-
-    return () => {
-      saved.forEach(({ el, overflow, overflowY }) => {
-        el.style.overflow = overflow
-        el.style.overflowY = overflowY
-      })
-      window.removeEventListener('wheel', preventDefault)
-      window.removeEventListener('touchmove', preventDefault)
-      window.removeEventListener('keydown', preventKeys)
-    }
-  }, [])
-
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-
-        {/* Top accent */}
-        <div style={{
-          position: 'absolute', top: 0, left: '8%', right: '8%', height: '2px',
-          background: 'linear-gradient(90deg, transparent, #6c63ff, #a78bfa, transparent)',
-          borderRadius: '0 0 4px 4px', zIndex: 1,
-        }} />
-
-        {/* Header */}
+      <div className="modal">
         <div className="modal-header">
           <h2>{title}</h2>
-          <button
-            className="btn btn-secondary btn-sm"
-            onClick={onClose}
-            style={{ width: '30px', height: '30px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            <X size={13} />
+          <button className="btn btn-secondary btn-sm" onClick={onClose}>
+            <X size={14} />
           </button>
         </div>
-
-        {/* Body */}
-        <div className="modal-body">
-          {children}
-        </div>
-
-        {/* Footer */}
+        <div className="modal-body">{children}</div>
         <div className="modal-footer">
           <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
           <button className="btn btn-primary" onClick={onSave}>
@@ -388,12 +279,11 @@ function Dashboard({ shirts, customers, partners }) {
           </table>
         </div>
       </div>
-      <PageFooter />
     </div>
   )
 }
 // ── SHIRTS PAGE ──
-function ShirtsPage({ shirts, setShirts, canEdit }) {
+function ShirtsPage({ shirts, setShirts }) {
   const [showModal, setShowModal] = useState(false)
   const [editItem, setEditItem] = useState(null)
   const [search, setSearch] = useState('')
@@ -459,11 +349,9 @@ function ShirtsPage({ shirts, setShirts, canEdit }) {
           <h2>Shirts</h2>
           <p>Track production costs for each shirt type</p>
         </div>
-        {canEdit && (
-          <button className="btn btn-primary" onClick={openAdd}>
-            <Plus size={16} /> Add Shirt
-          </button>
-        )}
+        <button className="btn btn-primary" onClick={openAdd}>
+          <Plus size={16} /> Add Shirt
+        </button>
       </div>
 
       <div className="table-wrapper">
@@ -503,14 +391,10 @@ function ShirtsPage({ shirts, setShirts, canEdit }) {
                   <td>Rs {(parseFloat(s.reserve) || 0).toLocaleString()}</td>
                   <td><span className="badge badge-purple">Rs {(parseFloat(s.costOfProduction) || 0).toLocaleString()}</span></td>
                   <td>
-                    {canEdit ? (
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <button className="btn btn-secondary btn-sm" onClick={() => openEdit(s)}><Edit2 size={12} /></button>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(s.id)}><Trash2 size={12} /></button>
-                      </div>
-                    ) : (
-                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>View only</span>
-                    )}
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button className="btn btn-secondary btn-sm" onClick={() => openEdit(s)}><Edit2 size={12} /></button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(s.id)}><Trash2 size={12} /></button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -545,8 +429,6 @@ function ShirtsPage({ shirts, setShirts, canEdit }) {
           <div className="stat-label">Total Printing Cost</div>
         </div>
       </div>
-
-      <PageFooter />
 
       {showModal && (
         <Modal
@@ -594,7 +476,7 @@ function ShirtsPage({ shirts, setShirts, canEdit }) {
   )
 }
 // ── CUSTOMERS PAGE ──
-function CustomersPage({ customers, setCustomers, canEdit }) {
+function CustomersPage({ customers, setCustomers }) {
   const [showModal, setShowModal] = useState(false)
   const [editItem, setEditItem] = useState(null)
   const [search, setSearch] = useState('')
@@ -664,11 +546,9 @@ function CustomersPage({ customers, setCustomers, canEdit }) {
           <h2>Customers</h2>
           <p>Track all orders, payments and profits</p>
         </div>
-        {canEdit && (
-          <button className="btn btn-primary" onClick={openAdd}>
-            <Plus size={16} /> Add Customer
-          </button>
-        )}
+        <button className="btn btn-primary" onClick={openAdd}>
+          <Plus size={16} /> Add Customer
+        </button>
       </div>
 
       <div className="table-wrapper">
@@ -722,14 +602,10 @@ function CustomersPage({ customers, setCustomers, canEdit }) {
                     </span>
                   </td>
                   <td>
-                    {canEdit ? (
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <button className="btn btn-secondary btn-sm" onClick={() => openEdit(c)}><Edit2 size={12} /></button>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(c.id)}><Trash2 size={12} /></button>
-                      </div>
-                    ) : (
-                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>View only</span>
-                    )}
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button className="btn btn-secondary btn-sm" onClick={() => openEdit(c)}><Edit2 size={12} /></button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(c.id)}><Trash2 size={12} /></button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -771,8 +647,6 @@ function CustomersPage({ customers, setCustomers, canEdit }) {
           <div className="stat-label">Total Profit</div>
         </div>
       </div>
-
-      <PageFooter />
 
       {showModal && (
         <Modal
@@ -857,7 +731,7 @@ function CustomersPage({ customers, setCustomers, canEdit }) {
   )
 }
 // ── PARTNERS PAGE ──
-function PartnersPage({ partners, setPartners, canEdit }) {
+function PartnersPage({ partners, setPartners }) {
   const [selected, setSelected] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [editItem, setEditItem] = useState(null)
@@ -1076,7 +950,7 @@ function PartnersPage({ partners, setPartners, canEdit }) {
                           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                           marginBottom: '12px'
                         }}>
-                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '600' }}>TOTAL PROFIT</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '600' }}>TOTAL VALUE</span>
                           <span style={{ fontSize: '14px', fontWeight: '900', color: pac.color }}>
                             Rs {totalValue.toLocaleString()}
                           </span>
@@ -1162,11 +1036,9 @@ function PartnersPage({ partners, setPartners, canEdit }) {
                           </div>
                         </div>
                         <div style={{ display: 'flex', gap: '10px' }}>
-                          {canEdit && (
-                            <button className="btn btn-secondary btn-sm" onClick={(e) => { e.stopPropagation(); openEdit(activePartner) }}>
-                              <Edit2 size={13} /> Edit
-                            </button>
-                          )}
+                          <button className="btn btn-secondary btn-sm" onClick={(e) => { e.stopPropagation(); openEdit(activePartner) }}>
+                            <Edit2 size={13} /> Edit
+                          </button>
                           <button className="btn btn-secondary btn-sm" onClick={(e) => { e.stopPropagation(); setSelected(null) }} style={{ padding: '6px 10px' }}>
                             <X size={13} />
                           </button>
@@ -1257,8 +1129,6 @@ function PartnersPage({ partners, setPartners, canEdit }) {
         </div>
       </div>
 
-      <PageFooter />
-
       {showModal && (
         <Modal
           title="Edit Partner"
@@ -1311,652 +1181,8 @@ function PartnersPage({ partners, setPartners, canEdit }) {
 
 
 
-// ── CREDENTIALS & ROLES ──
-const VALID_USERS = [
-  { username: 'saim', password: 'house426747', displayName: 'Saim', role: 'Accountant', displayRole: 'Shirt Designer', canEdit: true },
-  { username: 'daniyal', password: 'daniyal123', displayName: 'Daniyal', role: 'Accountant', displayRole: 'Accountant', canEdit: true },
-  { username: 'bari', password: 'bari123', displayName: 'Bari', role: 'Investor', displayRole: 'Investor', canEdit: false },
-  { username: 'aziz', password: 'aziz123', displayName: 'Aziz', role: 'Sales Manager', displayRole: 'Sales Manager', canEdit: false },
-  { username: 'wahab', password: '98769876', displayName: 'Wahab', role: 'Investor', displayRole: 'Investor', canEdit: false },
-]
-
-const ROLE_COLORS = {
-  'Accountant':     { color: '#6c63ff', bg: 'rgba(108,99,255,0.15)', border: 'rgba(108,99,255,0.35)' },
-  'Shirt Designer': { color: '#ff6584', bg: 'rgba(255,101,132,0.15)', border: 'rgba(255,101,132,0.35)' },
-  'Investor':       { color: '#f9a825', bg: 'rgba(249,168,37,0.15)', border: 'rgba(249,168,37,0.35)' },
-  'Sales Manager':  { color: '#43e97b', bg: 'rgba(67,233,123,0.15)', border: 'rgba(67,233,123,0.35)' },
-}
-
-// ── LOGIN PAGE ──
-function LoginPage({ onLogin }) {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPass, setShowPass] = useState(false)
-  const [error, setError] = useState('')
-  const [shaking, setShaking] = useState(false)
-
-  const handleLogin = () => {
-    const match = VALID_USERS.find(
-      u => u.username === username.trim() && u.password === password
-    )
-    if (match) {
-      onLogin(match.username)
-    } else {
-      setError('Invalid username or password')
-      setShaking(true)
-      setTimeout(() => setShaking(false), 600)
-    }
-  }
-
-  const handleKey = (e) => { if (e.key === 'Enter') handleLogin() }
-
-  return (
-    <div style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'var(--bg-primary)', position: 'relative', overflow: 'hidden',
-    }}>
-      <style>{`
-        @keyframes loginFadeIn {
-          from { opacity: 0; transform: translateY(24px) scale(0.97); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes shake {
-          0%,100% { transform: translateX(0); }
-          15% { transform: translateX(-8px); }
-          30% { transform: translateX(8px); }
-          45% { transform: translateX(-6px); }
-          60% { transform: translateX(6px); }
-          75% { transform: translateX(-3px); }
-          90% { transform: translateX(3px); }
-        }
-        @keyframes orb1 {
-          0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
-          50% { transform: translate(-50%,-50%) scale(1.15); opacity: 0.8; }
-        }
-        @keyframes orb2 {
-          0%,100% { transform: translate(-50%,-50%) scale(1.1); opacity: 0.4; }
-          50% { transform: translate(-50%,-50%) scale(0.9); opacity: 0.7; }
-        }
-        @keyframes floatGrid {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(40px); }
-        }
-        @keyframes errorSlide {
-          from { opacity: 0; transform: translateY(-8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .login-input:focus {
-          outline: none !important;
-          border-color: #6c63ff !important;
-          box-shadow: 0 0 0 3px rgba(108,99,255,0.18) !important;
-        }
-        .login-btn:hover {
-          transform: translateY(-2px) !important;
-          box-shadow: 0 8px 32px rgba(108,99,255,0.45) !important;
-        }
-        .login-btn:active {
-          transform: translateY(0px) !important;
-        }
-      `}</style>
-
-      {/* Animated background */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: 'linear-gradient(rgba(108,99,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(108,99,255,0.035) 1px, transparent 1px)',
-          backgroundSize: '44px 44px',
-          animation: 'floatGrid 4s linear infinite',
-        }} />
-        <div style={{
-          position: 'absolute', top: '20%', left: '25%',
-          width: '520px', height: '520px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(108,99,255,0.09) 0%, transparent 70%)',
-          filter: 'blur(48px)',
-          animation: 'orb1 6s ease-in-out infinite',
-          transform: 'translate(-50%,-50%)',
-        }} />
-        <div style={{
-          position: 'absolute', top: '75%', left: '75%',
-          width: '380px', height: '380px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255,101,132,0.07) 0%, transparent 70%)',
-          filter: 'blur(48px)',
-          animation: 'orb2 7s ease-in-out infinite',
-          transform: 'translate(-50%,-50%)',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: '10%', left: '15%',
-          width: '260px', height: '260px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(67,233,123,0.05) 0%, transparent 70%)',
-          filter: 'blur(40px)',
-        }} />
-      </div>
-
-      {/* Card */}
-      <div style={{
-        position: 'relative', zIndex: 1,
-        width: '100%', maxWidth: '420px', margin: '0 16px',
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border)',
-        borderRadius: '28px',
-        padding: '48px 40px 40px',
-        boxShadow: '0 24px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(108,99,255,0.08)',
-        animation: shaking ? 'shake 0.6s ease' : 'loginFadeIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards',
-      }}>
-        {/* Top accent line */}
-        <div style={{
-          position: 'absolute', top: 0, left: '10%', right: '10%', height: '2px',
-          background: 'linear-gradient(90deg, transparent, #6c63ff, #a78bfa, transparent)',
-          borderRadius: '0 0 4px 4px',
-        }} />
-
-        {/* Logo area */}
-        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-          <div style={{
-            fontSize: '52px', marginBottom: '16px',
-            filter: 'drop-shadow(0 6px 20px rgba(108,99,255,0.4))',
-            display: 'inline-block',
-          }}>👔</div>
-          <div style={{
-            fontSize: '28px', fontWeight: '900', letterSpacing: '-1px',
-            color: 'var(--text-primary)', marginBottom: '4px',
-          }}>STARKET</div>
-          <div style={{
-            fontSize: '11px', letterSpacing: '3px', fontWeight: '600',
-            color: 'var(--text-muted)', textTransform: 'uppercase',
-          }}>Business Manager</div>
-          <div style={{
-            marginTop: '16px', height: '1px',
-            background: 'linear-gradient(90deg, transparent, var(--border), transparent)',
-          }} />
-          <div style={{
-            marginTop: '16px', fontSize: '14px', color: 'var(--text-muted)', fontWeight: '500',
-          }}>Sign in to your account</div>
-        </div>
-
-        {/* Error */}
-        {error && (
-          <div style={{
-            background: 'rgba(255,101,132,0.1)', border: '1px solid rgba(255,101,132,0.3)',
-            borderRadius: '12px', padding: '11px 16px', marginBottom: '20px',
-            fontSize: '13px', color: '#ff6584', fontWeight: '600',
-            display: 'flex', alignItems: 'center', gap: '8px',
-            animation: 'errorSlide 0.3s ease',
-          }}>
-            <span style={{ fontSize: '15px' }}>⚠️</span> {error}
-          </div>
-        )}
-
-        {/* Username */}
-        <div style={{ marginBottom: '16px' }}>
-          <label style={{
-            display: 'block', fontSize: '12px', fontWeight: '700',
-            color: 'var(--text-muted)', letterSpacing: '0.8px',
-            textTransform: 'uppercase', marginBottom: '8px',
-          }}>Username</label>
-          <div style={{ position: 'relative' }}>
-            <span style={{
-              position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
-              fontSize: '16px', pointerEvents: 'none',
-            }}>👤</span>
-            <input
-              className="login-input"
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={e => { setUsername(e.target.value); setError('') }}
-              onKeyDown={handleKey}
-              style={{
-                width: '100%', boxSizing: 'border-box',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1.5px solid var(--border)',
-                borderRadius: '12px', padding: '13px 14px 13px 42px',
-                fontSize: '14px', color: 'var(--text-primary)',
-                fontFamily: 'var(--font)', transition: 'all 0.2s ease',
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Password */}
-        <div style={{ marginBottom: '28px' }}>
-          <label style={{
-            display: 'block', fontSize: '12px', fontWeight: '700',
-            color: 'var(--text-muted)', letterSpacing: '0.8px',
-            textTransform: 'uppercase', marginBottom: '8px',
-          }}>Password</label>
-          <div style={{ position: 'relative' }}>
-            <span style={{
-              position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
-              fontSize: '16px', pointerEvents: 'none',
-            }}>🔒</span>
-            <input
-              className="login-input"
-              type={showPass ? 'text' : 'password'}
-              placeholder="Enter your password"
-              value={password}
-              onChange={e => { setPassword(e.target.value); setError('') }}
-              onKeyDown={handleKey}
-              style={{
-                width: '100%', boxSizing: 'border-box',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1.5px solid var(--border)',
-                borderRadius: '12px', padding: '13px 44px 13px 42px',
-                fontSize: '14px', color: 'var(--text-primary)',
-                fontFamily: 'var(--font)', transition: 'all 0.2s ease',
-              }}
-            />
-            <button
-              onClick={() => setShowPass(v => !v)}
-              style={{
-                position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
-                background: 'none', border: 'none', cursor: 'pointer',
-                fontSize: '16px', padding: '2px', opacity: 0.6,
-                transition: 'opacity 0.2s',
-              }}
-              onMouseEnter={e => e.currentTarget.style.opacity = '1'}
-              onMouseLeave={e => e.currentTarget.style.opacity = '0.6'}
-            >{showPass ? '🙈' : '👁️'}</button>
-          </div>
-        </div>
-
-        {/* Login button */}
-        <button
-          className="login-btn"
-          onClick={handleLogin}
-          style={{
-            width: '100%', padding: '14px',
-            background: 'linear-gradient(135deg, #6c63ff 0%, #a78bfa 100%)',
-            border: 'none', borderRadius: '14px',
-            color: '#fff', fontSize: '15px', fontWeight: '800',
-            letterSpacing: '0.5px', cursor: 'pointer',
-            boxShadow: '0 4px 20px rgba(108,99,255,0.35)',
-            transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
-            fontFamily: 'var(--font)',
-          }}
-        >
-          Sign In →
-        </button>
-
-        {/* Footer */}
-        <div style={{
-          marginTop: '28px', textAlign: 'center',
-          fontSize: '11px', color: 'var(--text-muted)', opacity: 0.6,
-        }}>
-          © 2026 STARKET · Authorized Personnel Only
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ── ROLE LEGEND (interactive) ──
-function RoleLegend({ roleGroups }) {
-  const [activeRole, setActiveRole] = useState(null)
-
-  const denied = {
-    'Sales Manager': ['Cannot add records', 'Cannot edit records', 'Cannot delete records'],
-    'Investor':      ['Cannot add records', 'Cannot edit records', 'Cannot delete records'],
-  }
-
-  return (
-    <div>
-      <style>{`
-        @keyframes legendSlide {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes memberPop {
-          from { opacity: 0; transform: scale(0.94); }
-          to { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
-
-      {/* Role tabs */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
-        {Object.entries(roleGroups).map(([role, info]) => {
-          const rc = ROLE_COLORS[role]
-          const isActive = activeRole === role
-          return (
-            <button
-              key={role}
-              onClick={() => setActiveRole(isActive ? null : role)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '10px 18px', borderRadius: '12px', cursor: 'pointer',
-                border: `1.5px solid ${isActive ? rc.color : rc.border}`,
-                background: isActive ? rc.bg : 'var(--bg-card)',
-                color: isActive ? rc.color : 'var(--text-secondary)',
-                fontWeight: '700', fontSize: '13px',
-                transition: 'all 0.2s ease',
-                boxShadow: isActive ? `0 4px 20px ${rc.color}25` : 'none',
-                transform: isActive ? 'translateY(-2px)' : 'translateY(0)',
-              }}
-              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = rc.color; e.currentTarget.style.color = rc.color; e.currentTarget.style.background = rc.bg } }}
-              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = rc.border; e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'var(--bg-card)' } }}
-            >
-              <span style={{ fontSize: '16px' }}>{info.icon}</span>
-              {role}
-              <span style={{
-                fontSize: '10px', fontWeight: '800', padding: '2px 7px',
-                borderRadius: '20px', background: isActive ? `${rc.color}30` : 'rgba(255,255,255,0.06)',
-                color: isActive ? rc.color : 'var(--text-muted)',
-                border: `1px solid ${isActive ? rc.color + '50' : 'rgba(255,255,255,0.08)'}`,
-              }}>
-                {VALID_USERS.filter(u => u.displayRole === role).length}
-              </span>
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Expanded panel */}
-      {activeRole && (() => {
-        const info = roleGroups[activeRole]
-        const rc = ROLE_COLORS[activeRole]
-        const members = VALID_USERS.filter(u => u.displayRole === activeRole)
-        const deniedList = denied[activeRole] || []
-
-        return (
-          <div style={{
-            background: 'var(--bg-card)',
-            border: `1.5px solid ${rc.border}`,
-            borderRadius: '20px', padding: '28px',
-            animation: 'legendSlide 0.3s ease',
-            position: 'relative', overflow: 'hidden',
-            boxShadow: `0 8px 40px ${rc.color}12`,
-          }}>
-            {/* Accent top */}
-            <div style={{
-              position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
-              background: `linear-gradient(90deg, ${rc.color}, ${rc.color}44)`,
-            }} />
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
-              <div style={{
-                width: '48px', height: '48px', borderRadius: '14px',
-                background: rc.bg, border: `2px solid ${rc.border}`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px',
-              }}>{info.icon}</div>
-              <div>
-                <div style={{ fontSize: '20px', fontWeight: '900', color: 'var(--text-primary)' }}>{activeRole}</div>
-                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>{info.desc}</div>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
-
-              {/* Members */}
-              <div>
-                <div style={{
-                  fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)',
-                  letterSpacing: '1.2px', textTransform: 'uppercase', marginBottom: '12px',
-                }}>Members ({members.length})</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {members.length > 0 ? members.map((u, i) => (
-                    <div key={i} style={{
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      padding: '10px 14px', borderRadius: '12px',
-                      background: rc.bg, border: `1px solid ${rc.border}`,
-                      animation: `memberPop 0.25s ease ${i * 0.06}s both`,
-                    }}>
-                      <div style={{
-                        width: '32px', height: '32px', borderRadius: '8px',
-                        background: `${rc.color}25`, border: `1px solid ${rc.border}`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '12px', fontWeight: '900', color: rc.color, flexShrink: 0,
-                      }}>{u.displayName.slice(0, 2).toUpperCase()}</div>
-                      <div>
-                        <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{u.displayName}</div>
-                        <div style={{ fontSize: '10px', color: rc.color, fontWeight: '600' }}>@{u.username}</div>
-                      </div>
-                      <div style={{ marginLeft: 'auto' }}>
-                        <span style={{
-                          fontSize: '10px', padding: '2px 8px', borderRadius: '20px',
-                          background: u.canEdit ? 'rgba(67,233,123,0.15)' : 'rgba(255,255,255,0.05)',
-                          border: `1px solid ${u.canEdit ? 'rgba(67,233,123,0.3)' : 'rgba(255,255,255,0.08)'}`,
-                          color: u.canEdit ? '#43e97b' : 'var(--text-muted)',
-                          fontWeight: '700',
-                        }}>{u.canEdit ? 'Editor' : 'Viewer'}</span>
-                      </div>
-                    </div>
-                  )) : (
-                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic', padding: '10px' }}>No members</div>
-                  )}
-                </div>
-              </div>
-
-              {/* Permissions */}
-              <div>
-                <div style={{
-                  fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)',
-                  letterSpacing: '1.2px', textTransform: 'uppercase', marginBottom: '12px',
-                }}>Permissions</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {info.perms.map((p, i) => (
-                    <div key={i} style={{
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      padding: '10px 14px', borderRadius: '10px',
-                      background: 'rgba(67,233,123,0.07)',
-                      border: '1px solid rgba(67,233,123,0.2)',
-                    }}>
-                      <div style={{
-                        width: '20px', height: '20px', borderRadius: '50%',
-                        background: 'rgba(67,233,123,0.2)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
-                      }}>
-                        <span style={{ fontSize: '11px', color: '#43e97b', fontWeight: '900' }}>✓</span>
-                      </div>
-                      <span style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500' }}>{p}</span>
-                    </div>
-                  ))}
-                  {deniedList.map((p, i) => (
-                    <div key={`d-${i}`} style={{
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      padding: '10px 14px', borderRadius: '10px',
-                      background: 'rgba(255,101,132,0.07)',
-                      border: '1px solid rgba(255,101,132,0.2)',
-                    }}>
-                      <div style={{
-                        width: '20px', height: '20px', borderRadius: '50%',
-                        background: 'rgba(255,101,132,0.2)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
-                      }}>
-                        <span style={{ fontSize: '11px', color: '#ff6584', fontWeight: '900' }}>✕</span>
-                      </div>
-                      <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: '500' }}>{p}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-          </div>
-        )
-      })()}
-    </div>
-  )
-}
-
-// ── ROLES PAGE ──
-function RolesPage() {
-  const roleGroups = {
-    'Accountant':     { icon: '📊', desc: 'Full access — can view, add, edit and delete all data.', perms: ['View all data', 'Add records', 'Edit records', 'Delete records'] },
-    'Shirt Designer': { icon: '👔', desc: 'Full access — can view, add, edit and delete all data.', perms: ['View all data', 'Add records', 'Edit records', 'Delete records'] },
-    'Sales Manager':  { icon: '📈', desc: 'Read-only access — can view all data but cannot make changes.', perms: ['View all data'] },
-    'Investor':       { icon: '💰', desc: 'Read-only access — can view all data but cannot make changes.', perms: ['View all data'] },
-  }
-
-  return (
-    <div className="animate-in">
-      <style>{`
-        @keyframes cardIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes memberIn {
-          from { opacity: 0; transform: translateX(-10px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
-
-      <div className="page-header">
-        <div>
-          <h2>Team Roles</h2>
-          <p>All team members, their roles and access permissions</p>
-        </div>
-      </div>
-
-      {/* MEMBER CARDS */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-        gap: '20px',
-        marginBottom: '40px',
-      }}>
-        {VALID_USERS.map((u, i) => {
-          const rc = ROLE_COLORS[u.displayRole] || ROLE_COLORS['Investor']
-          const initials = u.displayName.slice(0, 2).toUpperCase()
-          return (
-            <div key={i} style={{
-              background: 'var(--bg-card)',
-              border: `1px solid ${rc.border}`,
-              borderRadius: '20px',
-              padding: '28px 24px',
-              position: 'relative',
-              overflow: 'hidden',
-              animation: `cardIn 0.4s ease ${i * 0.07}s both`,
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 16px 48px ${rc.color}20` }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
-            >
-              {/* Top accent bar */}
-              <div style={{
-                position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
-                background: `linear-gradient(90deg, ${rc.color}, ${rc.color}44)`,
-              }} />
-
-              {/* Watermark */}
-              <div style={{
-                position: 'absolute', bottom: '-12px', right: '-8px',
-                fontSize: '80px', opacity: 0.04, fontWeight: '900',
-                color: rc.color, pointerEvents: 'none', lineHeight: 1,
-              }}>{initials}</div>
-
-              {/* Avatar + name */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
-                <div style={{
-                  width: '56px', height: '56px', borderRadius: '16px',
-                  background: rc.bg, border: `2px solid ${rc.border}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '20px', fontWeight: '900', color: rc.color,
-                  boxShadow: `0 4px 16px ${rc.color}25`, flexShrink: 0,
-                }}>{initials}</div>
-                <div>
-                  <div style={{ fontSize: '17px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
-                    {u.displayName}
-                  </div>
-                  <span style={{
-                    fontSize: '11px', fontWeight: '700', letterSpacing: '0.6px',
-                    padding: '3px 10px', borderRadius: '20px',
-                    background: rc.bg, border: `1px solid ${rc.border}`, color: rc.color,
-                  }}>{u.displayRole}</span>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div style={{
-                height: '1px', marginBottom: '16px',
-                background: `linear-gradient(90deg, ${rc.color}30, transparent)`,
-              }} />
-
-              {/* Access level */}
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '10px 14px', borderRadius: '10px',
-                background: u.canEdit ? 'rgba(67,233,123,0.08)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${u.canEdit ? 'rgba(67,233,123,0.2)' : 'rgba(255,255,255,0.06)'}`,
-                marginBottom: '12px',
-              }}>
-                <span style={{ fontSize: '16px' }}>{u.canEdit ? '✏️' : '👁️'}</span>
-                <div>
-                  <div style={{ fontSize: '12px', fontWeight: '700', color: u.canEdit ? '#43e97b' : 'var(--text-secondary)' }}>
-                    {u.canEdit ? 'Full Access' : 'View Only'}
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '1px' }}>
-                    {u.canEdit ? 'Can edit & manage data' : 'Cannot edit or add data'}
-                  </div>
-                </div>
-              </div>
-
-              {/* Permissions list */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {(roleGroups[u.displayRole]?.perms || ['View all data']).map((perm, j) => (
-                  <div key={j} style={{
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    padding: '7px 10px', borderRadius: '8px',
-                    background: 'rgba(67,233,123,0.06)',
-                    border: '1px solid rgba(67,233,123,0.15)',
-                    animation: `memberIn 0.3s ease ${i * 0.07 + j * 0.05}s both`,
-                  }}>
-                    <div style={{
-                      width: '18px', height: '18px', borderRadius: '50%',
-                      background: 'rgba(67,233,123,0.18)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                    }}>
-                      <span style={{ color: '#43e97b', fontSize: '10px', fontWeight: '900' }}>✓</span>
-                    </div>
-                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '500' }}>{perm}</span>
-                  </div>
-                ))}
-                {(!u.canEdit ? ['Cannot add records', 'Cannot edit records', 'Cannot delete records'] : []).map((perm, j) => (
-                  <div key={`d-${j}`} style={{
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    padding: '7px 10px', borderRadius: '8px',
-                    background: 'rgba(255,101,132,0.06)',
-                    border: '1px solid rgba(255,101,132,0.15)',
-                    animation: `memberIn 0.3s ease ${i * 0.07 + j * 0.05}s both`,
-                  }}>
-                    <div style={{
-                      width: '18px', height: '18px', borderRadius: '50%',
-                      background: 'rgba(255,101,132,0.18)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                    }}>
-                      <span style={{ color: '#ff6584', fontSize: '10px', fontWeight: '900' }}>✕</span>
-                    </div>
-                    <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '500' }}>{perm}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* ROLE LEGEND */}
-      <div style={{ marginBottom: '32px' }}>
-        <div style={{
-          fontSize: '13px', fontWeight: '700', color: 'var(--text-muted)',
-          letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '14px',
-        }}>Role Permissions Overview</div>
-
-        <RoleLegend roleGroups={roleGroups} />
-      </div>
-
-      <PageFooter />
-    </div>
-  )
-}
-
 // ── MAIN APP ──
 export default function App() {
-  // ALL hooks must be declared first — no early returns before this block
-  const [loggedIn, setLoggedIn] = useState(() => !!sessionStorage.getItem('starket_user'))
-  const [currentUser, setCurrentUser] = useState(() => sessionStorage.getItem('starket_user') || '')
-  const currentUserObj = VALID_USERS.find(u => u.username === currentUser) || null
-  const canEdit = currentUserObj?.canEdit ?? false
   const [page, setPage] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -1967,23 +1193,15 @@ export default function App() {
   const [minTimeDone, setMinTimeDone] = useState(false)
   const [fadeOut, setFadeOut] = useState(false)
 
-  const handleLogin = (username) => {
-    sessionStorage.setItem('starket_user', username)
-    setCurrentUser(username)
-    setLoggedIn(true)
-  }
-
   useEffect(() => {
-    if (!loggedIn) return // don't start timer until logged in
     const timer = setTimeout(() => {
       setFadeOut(true)
       setTimeout(() => setMinTimeDone(true), 600)
     }, 4200)
     return () => clearTimeout(timer)
-  }, [loggedIn])
+  }, [])
 
   useEffect(() => {
-    if (!loggedIn) return // don't fetch until logged in
     const fetchAll = async () => {
       setLoading(true)
       const [s, c, p] = await Promise.all([
@@ -2010,10 +1228,7 @@ export default function App() {
       setLoading(false)
     }
     fetchAll()
-  }, [loggedIn])
-
-  // Conditional returns AFTER all hooks
-  if (!loggedIn) return <LoginPage onLogin={handleLogin} />
+  }, [])
 
   if (loading || !minTimeDone) return (
     <div style={{
@@ -2118,29 +1333,13 @@ export default function App() {
           animation: 'textReveal1 4.2s ease forwards'
         }}>STARKET</div>
 
-        {/* Welcome message */}
-        {currentUser && (() => {
-          const user = VALID_USERS.find(u => u.username === currentUser)
-          const rc = user ? ROLE_COLORS[user.role] : null
-          return user ? (
-            <div style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
-              marginBottom: '8px',
-              animation: 'textReveal2 4.2s ease forwards'
-            }}>
-              <div style={{ fontSize: '15px', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                Welcome, <span style={{ color: 'var(--text-primary)', fontWeight: '800' }}>{user.displayName}</span>
-              </div>
-              <span style={{
-                fontSize: '11px', fontWeight: '700', letterSpacing: '1px',
-                padding: '3px 12px', borderRadius: '20px',
-                background: rc.bg, border: `1px solid ${rc.border}`, color: rc.color,
-              }}>{user.role}</span>
-            </div>
-          ) : null
-        })()}
-
-        <div style={{ marginBottom: '44px' }} />
+        {/* Tagline */}
+        <div style={{
+          fontSize: '12px', color: 'var(--text-muted)', fontWeight: '500',
+          letterSpacing: '3.5px', textTransform: 'uppercase',
+          marginBottom: '44px',
+          animation: 'textReveal2 4.2s ease forwards'
+        }}>Business Manager</div>
 
         {/* Progress bar */}
         <div style={{
@@ -2227,25 +1426,19 @@ export default function App() {
             <ShirtsPage
               shirts={shirts}
               setShirts={setShirts}
-              canEdit={canEdit}
             />
           )}
           {page === 'customers' && (
             <CustomersPage
               customers={customers}
               setCustomers={setCustomers}
-              canEdit={canEdit}
             />
           )}
           {page === 'partners' && (
             <PartnersPage
               partners={partners}
               setPartners={setPartners}
-              canEdit={canEdit}
             />
-          )}
-          {page === 'roles' && (
-            <RolesPage />
           )}
         </main>
       </div>
