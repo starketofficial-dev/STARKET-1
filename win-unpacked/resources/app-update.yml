@@ -1,0 +1,4 @@
+owner: ammar-dev-dev
+repo: starket
+provider: github
+updaterCacheDirName: starket-updater

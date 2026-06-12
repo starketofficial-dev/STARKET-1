@@ -1,0 +1,8 @@
+version: 1.0.0
+files:
+  - url: Starket-Setup.exe
+    sha512: rQORZ1sC9CyoCKke3KpPyAJ/jEt9KUBeoJJGl//Vm0hSO0PoALiWEiaes7+F/lIGr4UtqJKf+IeFsxK6HZrNDw==
+    size: 106032787
+path: Starket-Setup.exe
+sha512: rQORZ1sC9CyoCKke3KpPyAJ/jEt9KUBeoJJGl//Vm0hSO0PoALiWEiaes7+F/lIGr4UtqJKf+IeFsxK6HZrNDw==
+releaseDate: '2026-06-11T22:20:32.253Z'

@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "2cecef97-d285-4ea9-ad76-d6e3e985a1c2"
+      }
+    },
+    "android": {
+      "package": "com.starket.starket"
+    }
+  }
+}
